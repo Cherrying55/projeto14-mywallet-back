@@ -1,8 +1,11 @@
+import { db } from "../connections/db.js";
+
 export async function gettransactions(req,res){
 
 
-  const { authorization } = req.header;
+  const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
+  const { type } = req.body;
 
   if(!token) {res.sendStatus(401);}
 
@@ -16,7 +19,7 @@ export async function gettransactions(req,res){
   if(user) {
     const transactioncollection = db.collection("transactions");
     try{
-        const transacoes = await transactioncollection.find({user: user.user, type: req.query.type}).toArray()
+        const transacoes = await transactioncollection.find({user: user.user, type}).toArray()
         res.send(transacoes)
     }
     catch(error){
@@ -31,9 +34,9 @@ export async function gettransactions(req,res){
 
 export async function posttransacoes(req,res){
 
-    const { authorization } = req.header;
+    const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
-  const { value, description } = req.body;
+  const { value, description, type } = req.body;
 
   if(!token) {res.sendStatus(401);}
 
@@ -47,7 +50,7 @@ export async function posttransacoes(req,res){
   if(user) {
     const transactioncollection = db.collection("transactions");
     try{
-        const novatransacao = await transactioncollection.insertOne({value, description, user: user.user, type: req.query.type})
+        const novatransacao = await transactioncollection.insertOne({value, description, user: user.user, type, day:`${new Date().getDate()}/${new Date().getMonth() + 1}`})
         res.sendStatus(201);
     }
     catch(error){

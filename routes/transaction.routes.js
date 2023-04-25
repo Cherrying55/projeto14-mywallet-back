@@ -5,6 +5,6 @@ import { gettransactions, posttransacoes } from '../controllers/transactioncontr
 import { transactionmodel } from '../model/transaction.model.js';
 
 const transactionrouter = Router();
-transactionrouter.post('/transactions/:type', validamodelo(transactionmodel), gettransactions);
-transactionrouter.get('/transactions/:type', posttransacoes);
+transactionrouter.post('/transactions', validamodelo(transactionmodel), gettransactions);
+transactionrouter.get('/transactions', posttransacoes);
 export default transactionrouter;

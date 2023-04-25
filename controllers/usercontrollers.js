@@ -1,10 +1,12 @@
-import { compareSync } from "bcrypt";
+import { compareSync, hashSync } from "bcrypt";
+import { v4 as uuid } from "uuid";
+import { db } from "../connections/db.js";
 
-export async function signin(res,req){
 
-    const email= req.body.email;
-    const password = req.body.password;
-    const usercollection = db.collection("usercollection")
+export async function signin(req,res){
+
+    const { email, password } = req.body;
+    const usercollection = db.collection("usercollection");
     try{
         const usernadb = await usercollection.findOne({email})
         if(usernadb){
@@ -12,8 +14,8 @@ export async function signin(res,req){
             if(correctpass){
                 const token = uuid();
         
-				await db.collection("sessions").insertOne({userId: user._id,token})
-                res.send(token);
+				await db.collection("sessions").insertOne({userId: usernadb._id,token})
+                res.send({token, nome: usernadb.nome});
             }
             else{
                 res.sendStatus(401);
@@ -21,7 +23,7 @@ export async function signin(res,req){
         }
     }
     catch (error){
-        return res.status(500).send(err.message);
+        return res.status(500).send(error.message);
     }
     
 
@@ -35,13 +37,13 @@ export async function signup(req,res){
     try{
         const jatemusuario = await usercollection.findOne({email})
         if(!jatemusuario){
-            const senhacriptografada = bcrypt.hashSync(senha, 10);
+            const senhacriptografada = hashSync(password, 10);
             const novousuario = await usercollection.insertOne({nome, email, password: senhacriptografada})
             res.sendStatus(201);
 
         }
     }
     catch (error) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(error.message);
     }
 }

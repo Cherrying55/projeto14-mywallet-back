@@ -1,8 +1,17 @@
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+
+
+
 const mongoClient = new MongoClient(process.env.MONGO_URI);
-const db1 = "";
+try {
+  await mongoClient.connect();
+  console.log("MongoDB conectado com sucesso!");
+} catch (err) {
+  console.log(err);
+}
 
-mongoClient.connect().then(() => {
-	db1 = mongoClient.db("chat");
-});
-
-export const db = db1;
+export const db = mongoClient.db("myWallet");
