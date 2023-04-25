@@ -5,7 +5,6 @@ export async function gettransactions(req,res){
 
   const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
-  const { type } = req.body;
   const usercollection = db.collection("usercollection");
 
   if(!token) {res.sendStatus(401);}
@@ -20,7 +19,7 @@ export async function gettransactions(req,res){
   if(user) {
     const transactioncollection = db.collection("transactions");
     try{
-        const transacoes = await transactioncollection.find({user: user.email, type}).toArray()
+        const transacoes = await transactioncollection.find({user: user.email}).toArray()
         res.send(transacoes)
     }
     catch(error){
