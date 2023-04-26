@@ -42,6 +42,9 @@ export async function signup(req,res){
             res.sendStatus(201);
 
         }
+        else{
+            res.sendStatus(409)
+        }
     }
     catch (error) {
         return res.status(500).send(error.message);
